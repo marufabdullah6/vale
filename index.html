@@ -13,7 +13,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         #yesBtn { transition: all 0.2s ease-out; z-index: 50; }
-        #noBtn { position: absolute; transition: all 0.2s ease; z-index: 40; }
+        /* Added specific starting position for No button */
+        #noBtn { 
+            position: absolute; 
+            transition: all 0.2s ease; 
+            z-index: 40;
+            margin-top: 60px; /* Positions it below Yes initially */
+        }
         .heart {
             position: absolute;
             color: #ff4d6d;
@@ -42,7 +48,7 @@
             
             <h1 id="main-heading" class="text-3xl font-bold text-gray-800 mb-8">Will you be my Valentine? 🌹</h1>
             
-            <div class="flex flex-col items-center justify-center gap-4 h-48" id="button-group">
+            <div class="flex flex-col items-center justify-center gap-4 h-48 relative" id="button-group">
                 <button id="yesBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-full shadow-lg">
                     Yes
                 </button>
@@ -56,15 +62,15 @@
             <img src="https://raw.githubusercontent.com/marufabdullah6/vale/main/love-heart.gif" 
                  class="mx-auto mb-6 w-48 h-48 object-contain">
             <h1 class="text-4xl font-bold text-pink-600 mb-4">YAY! 💋</h1>
-            <p class="text-gray-700 mb-6 font-medium">I knew you couldn't resist!</p>
+            <p class="text-gray-700 mb-6 font-medium">I knew you'd say yes!</p>
             
             <div class="bg-pink-100/50 p-6 rounded-xl text-left border-2 border-pink-200 space-y-3">
                 <p class="font-bold text-pink-700 text-lg">🗓️ Our Date Details:</p>
                 <p class="text-pink-800">📍 <strong>Where:</strong> Somewhere top secret (we'll discuss it lol)</p>
                 <p class="text-pink-800">⏰ <strong>When:</strong> February 10th @ Dinner Time</p>
                 <p class="text-pink-800 italic">🥗 <strong>Note:</strong> Don't worry about the menu—I've got your allergies memorized. We're going somewhere safe!</p>
-                <p class="text-pink-800 pt-2 text-center text-xl">💋💋💋</p>
             </div>
+            <button onclick="window.print()" class="mt-6 bg-pink-500 text-white px-4 py-2 rounded-lg text-sm">Screenshot & Save the Date!</button>
         </div>
     </div>
 
@@ -87,6 +93,7 @@
         const successSection = document.getElementById('success-section');
         const heartsContainer = document.getElementById('hearts-container');
 
+        // Floating Hearts Logic
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
@@ -98,19 +105,25 @@
         }
         setInterval(createHeart, 300);
 
+        // Movement logic
         function moveButton() {
-            // Updated move logic to keep it within the viewport better on iPad
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
+            // Keep it within screen bounds
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
             
-            noBtn.style.left = `${Math.max(10, x)}px`;
-            noBtn.style.top = `${Math.max(10, y)}px`;
+            // Apply new position
+            noBtn.style.position = 'fixed'; // Fixed works better for "moving" around the whole screen
+            noBtn.style.left = `${Math.max(20, x)}px`;
+            noBtn.style.top = `${Math.max(20, y)}px`;
+            noBtn.style.marginTop = '0'; // Remove initial margin
 
+            // Update Text
             phraseIndex = (phraseIndex + 1) % phrases.length;
             noBtn.innerText = phrases[phraseIndex];
 
-            yesSize += 0.35;
-            fontSize += 3;
+            // Grow Yes Button
+            yesSize += 0.4;
+            fontSize += 4;
             yesBtn.style.transform = `scale(${yesSize})`;
             yesBtn.style.fontSize = `${fontSize}px`;
         }
