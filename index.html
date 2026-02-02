@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #fff5f7; overflow: hidden; }
+        #yesBtn { transition: all 0.2s ease-out; z-index: 50; }
+        #noBtn { position: relative; transition: all 0.2s ease; z-index: 40; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <div id="main-card" class="text-center p-8 bg-white rounded-3xl shadow-xl max-w-md w-full mx-4">
+        
+        <div id="question-section">
+            <img id="image-display" src="https://raw.githubusercontent.com/marufabdullah6/vale/main/83a8a9ee94f941a41e840c007499fe55.gif" alt="Cute bear" class="mx-auto mb-6 w-48 h-48 object-contain rounded-lg">
+            
+            <h1 id="main-heading" class="text-3xl font-bold text-gray-800 mb-8">Will you be my Valentine? 🌹</h1>
+            
+            <div class="flex flex-col items-center justify-center gap-4 h-64" id="button-group">
+                <button id="yesBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full">
+                    Yes
+                </button>
+                <button id="noBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full">
+                    No
+                </button>
+            </div>
+        </div>
+
+        <div id="success-section" class="hidden">
+            <img src="https://raw.githubusercontent.com/marufabdullah6/vale/main/love-heart.gif" class="mx-auto mb-6 w-48 h-48 object-contain">
+            <h1 class="text-4xl font-bold text-pink-600 mb-4">YAY! 💋</h1>
+            <p class="text-gray-700 mb-6">You've made me the happiest person alive!</p>
+            <div class="bg-pink-50 p-4 rounded-xl text-left border-2 border-pink-200">
+                <p class="font-bold text-pink-700">🎁 Your Gift Itinerary:</p>
+                <ul class="text-sm mt-2 space-y-2 text-pink-800">
+                    <li>📍 <strong>Location:</strong> Your favorite spot</li>
+                    <li>⏰ <strong>Time:</strong> Tonight at 7</li>
+                    <li>💋 <strong>Bonus:</strong> Unlimited kisses included.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const phrases = [
+            "No", "Are you sure?", "Really sure??", "Think again!", 
+            "Last chance!", "Surely not?", "You might regret this!", 
+            "Give it another thought!", "Are you absolutely sure?", 
+            "Have a heart!", "Don't be so cold!", "Change of mind?"
+        ];
+
+        let phraseIndex = 0;
+        let yesSize = 1;
+        let fontSize = 16;
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionSection = document.getElementById('question-section');
+        const successSection = document.getElementById('success-section');
+
+        // Function to move the button
+        function moveButton() {
+            // Calculate random positions within the visible screen
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+
+            // Update text and grow Yes button
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+            noBtn.innerText = phrases[phraseIndex];
+
+            yesSize += 0.4;
+            fontSize += 4;
+            yesBtn.style.transform = `scale(${yesSize})`;
+            yesBtn.style.fontSize = `${fontSize}px`;
+        }
+
+        // Move button on hover (for desktop) and on click (for mobile/iPad)
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton);
+
+        yesBtn.addEventListener('click', () => {
+            questionSection.classList.add('hidden');
+            successSection.classList.remove('hidden');
+            // Remove the absolute positioning from "No" just in case
+            noBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
