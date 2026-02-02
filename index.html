@@ -8,18 +8,11 @@
     <style>
         body { 
             background-color: #fff5f7; 
-            overflow: hidden; 
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
         }
-        #yesBtn { transition: all 0.2s ease-out; z-index: 50; }
-        /* Added specific starting position for No button */
-        #noBtn { 
-            position: absolute; 
-            transition: all 0.2s ease; 
-            z-index: 40;
-            margin-top: 60px; /* Positions it below Yes initially */
-        }
+        #yesBtn { transition: all 0.2s ease-out; }
         .heart {
             position: absolute;
             color: #ff4d6d;
@@ -27,18 +20,23 @@
             user-select: none;
             animation: float 4s linear infinite;
             opacity: 0;
+            z-index: 1;
         }
         @keyframes float {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
+        .content-card {
+            position: relative;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
 
-    <div id="hearts-container"></div>
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none"></div>
 
-    <div id="main-card" class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl max-w-md w-full mx-4 relative z-10">
+    <div id="main-card" class="content-card text-center p-8 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl max-w-md w-full mx-4">
         
         <div id="question-section">
             <img id="image-display" 
@@ -48,7 +46,7 @@
             
             <h1 id="main-heading" class="text-3xl font-bold text-gray-800 mb-8">Will you be my Valentine? 🌹</h1>
             
-            <div class="flex flex-col items-center justify-center gap-4 h-48 relative" id="button-group">
+            <div class="flex flex-wrap items-center justify-center gap-4 transition-all" id="button-group">
                 <button id="yesBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-full shadow-lg">
                     Yes
                 </button>
@@ -70,7 +68,6 @@
                 <p class="text-pink-800">⏰ <strong>When:</strong> February 10th @ Dinner Time</p>
                 <p class="text-pink-800 italic">🥗 <strong>Note:</strong> Don't worry about the menu—I've got your allergies memorized. We're going somewhere safe!</p>
             </div>
-            <button onclick="window.print()" class="mt-6 bg-pink-500 text-white px-4 py-2 rounded-lg text-sm">Screenshot & Save the Date!</button>
         </div>
     </div>
 
@@ -103,33 +100,23 @@
             heartsContainer.appendChild(heart);
             setTimeout(() => heart.remove(), 4000);
         }
-        setInterval(createHeart, 300);
+        setInterval(createHeart, 400);
 
-        // Movement logic
-        function moveButton() {
-            // Keep it within screen bounds
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
-            
-            // Apply new position
-            noBtn.style.position = 'fixed'; // Fixed works better for "moving" around the whole screen
-            noBtn.style.left = `${Math.max(20, x)}px`;
-            noBtn.style.top = `${Math.max(20, y)}px`;
-            noBtn.style.marginTop = '0'; // Remove initial margin
-
+        // "No" Click Logic (Stays in place, but makes Yes grow)
+        noBtn.addEventListener('click', () => {
             // Update Text
             phraseIndex = (phraseIndex + 1) % phrases.length;
             noBtn.innerText = phrases[phraseIndex];
 
             // Grow Yes Button
-            yesSize += 0.4;
-            fontSize += 4;
+            yesSize += 0.5; // Increases size quickly
+            fontSize += 8;
             yesBtn.style.transform = `scale(${yesSize})`;
             yesBtn.style.fontSize = `${fontSize}px`;
-        }
-
-        noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('click', moveButton);
+            
+            // Optional: Move No button slightly down as Yes grows to give it space
+            noBtn.style.marginTop = `${yesSize * 5}px`;
+        });
 
         yesBtn.addEventListener('click', () => {
             questionSection.classList.add('hidden');
